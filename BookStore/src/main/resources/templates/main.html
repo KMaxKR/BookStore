@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Book Store</title>
+    <style>
+        /* styles.css */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    background-color: #4CAF50; /* Green */
+    color: #fff;
+    padding: 10px;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    padding: 0;
+}
+
+nav li {
+    margin: 0 10px;
+}
+
+nav a {
+    text-decoration: none;
+    color: #fff;
+}
+
+main {
+    text-align: center;
+    padding: 20px;
+}
+
+.statement {
+    font-size: 24px;
+    color: #333; /* Dark Gray */
+    margin-bottom: 20px;
+}
+
+.book-container {
+    margin: 20px;
+}
+
+.book {
+    display: inline-block;
+    margin: 20px;
+}
+
+.book img {
+    max-width: 100px;
+    max-height: 150px;
+}
+
+footer {
+    background-color: #4CAF50; /* Green */
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+}
+
+.social-media a {
+    margin: 0 10px;
+}
+    </style>
+</head>
+<body>
+<header>
+    <div class="logo">
+        <img src="img/book.png" alt="book">
+    </div>
+    <nav>
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Top</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Contact</a></li>
+            <li>
+                <a th:if="" href="#">Login</a>
+                <a th:if="" href="#">Register</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main>
+    <div class="statement">
+        <p>Actions are History, Books are Future</p>
+    </div>
+    <div class="book-container">
+        <h2>Books Top</h2>
+        <div class="book" th:each="">
+            <a href="#">
+                <img src="" alt="Book">
+                <p th:text=""></p>
+            </a>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="social-media">
+        <a href="#"><img src="img/facebook.png" alt="Facebook"></a>
+        <a href="#"><img src="img/twitter.png" alt="Twitter"></a>
+        <a href="#"><img src="img/instagram.png" alt="Instagram"></a>
+    </div>
+</footer>
+</body>
+</html>
