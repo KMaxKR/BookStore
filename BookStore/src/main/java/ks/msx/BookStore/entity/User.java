@@ -15,30 +15,31 @@ import java.util.Collection;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "")
+@Table(name = "user_table")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "")
+    @Column(name = "username")
     private String username;
 
-    @Column(name = "")
+    @Column(name = "password")
     private String password;
 
-    @Column(name = "")
+    @Column(name = "enable")
     private boolean enable;
 
-    @Column(name = "")
+    @Column(name = "account_non_locked")
     private boolean account_non_locked;
 
-    @Column(name = "")
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
     private Role role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return role.getAuthorities();
     }
 
     @Override
