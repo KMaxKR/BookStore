@@ -26,4 +26,11 @@ public class UserController {
         response.setStatus(200);
         response.sendRedirect(MainController.END_POINT);
     }
+
+    @RequestMapping(MainController.END_POINT+"/logout")
+    public void logoutUser(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        request.logout();
+        response.setStatus(200);
+        response.sendRedirect(MainController.END_POINT);
+    }
 }
