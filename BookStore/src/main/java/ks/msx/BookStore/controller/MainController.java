@@ -8,6 +8,7 @@ import java.io.IOException;
 
 @Controller
 public class MainController {
+    public static final String END_POINT = "/app/v1/main";
 
     @RequestMapping("/")
     public void redirectToMain(HttpServletResponse response) throws IOException {
@@ -15,7 +16,7 @@ public class MainController {
         response.sendRedirect("/app/v1/main");
     }
 
-    @RequestMapping("/app/v1/main")
+    @RequestMapping(END_POINT)
     public String returnMainPage(HttpServletResponse response){
         response.setStatus(200);
         return "main";
