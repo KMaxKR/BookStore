@@ -47,7 +47,7 @@
     You have been logged out.</div>
 <div class="container">
     <h2>Login</h2>
-    <form name='f' th:action="@{/api/v1/main/login}" method='post'>
+    <form name='f' th:action="@{login}" method='post'>
         <table>
             <tr>
                 <td><label>
@@ -65,7 +65,7 @@
         </table>
     </form>
     <p>or</p>
-    <button class="button"><a style="text-decoration: none; color: white;" href="/register_page">Register</a></button>
+    <button class="button"><a style="text-decoration: none; color: white;" href="/app/v1/main/register">Register</a></button>
 </div>
 </body>
 </html>

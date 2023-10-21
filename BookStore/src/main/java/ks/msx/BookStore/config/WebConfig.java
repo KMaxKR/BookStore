@@ -1,10 +1,10 @@
 package ks.msx.BookStore.config;
 
+import ks.msx.BookStore.controller.MainController;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractAuthenticationFilterConfigurer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,10 +19,17 @@ public class WebConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/app/v1/main", "/app/v1/main/***").permitAll()
+                        .requestMatchers("/", MainController.END_POINT,
+                                MainController.END_POINT+"/logout",
+                                MainController.END_POINT+"/login",
+                                MainController.END_POINT+"/login/log",
+                                MainController.END_POINT+"/register",
+                                MainController.END_POINT+"/register/reg").permitAll()
                         .anyRequest().authenticated()
                 )
-                .formLogin(AbstractAuthenticationFilterConfigurer::permitAll);
+                .formLogin(form -> form.permitAll()
+                        .loginPage(MainController.END_POINT+"/login")
+                        .successForwardUrl("/"));
         return http.build();
     }
 
