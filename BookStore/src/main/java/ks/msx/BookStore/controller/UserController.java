@@ -4,13 +4,14 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import ks.msx.BookStore.dto.UserDTO;
-import ks.msx.BookStore.entity.User;
 import ks.msx.BookStore.service.UserService;
 import ks.msx.BookStore.utility.JwtUtil;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
@@ -26,9 +27,12 @@ public class UserController {
         return "login";
     }
 
-    @RequestMapping(MainController.END_POINT+"/login/log")
+    @RequestMapping(value = MainController.END_POINT+"/login/log", method = RequestMethod.POST)
     public void loginUser(@RequestBody UserDTO dto, HttpServletResponse response, HttpServletRequest request) throws ServletException, IOException {
         request.login(dto.getUsername(), dto.getPassword());
+        UserDetails userDetails = userService.loadUserByUsername(dto.getUsername());
+        final String token = jwtUtil.generateToken(userDetails);
+        System.out.println(token);
         response.setStatus(200);
         response.sendRedirect("/");
     }
@@ -54,7 +58,6 @@ public class UserController {
                         .username(username)
                         .password(password)
                 .build());
-        System.out.println(jwtUtil.generateToken((User) userService.loadUserByUsername(username)));
         request.login(username, password);
         response.setStatus(200);
         response.sendRedirect(MainController.END_POINT);
