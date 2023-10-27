@@ -39,8 +39,9 @@ public class WebConfig {
                 )
                 .formLogin(form -> form.permitAll()
                         .loginPage(MainController.END_POINT+"/login")
-                        .successForwardUrl("/"))
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                        .successForwardUrl("/"));
+                        //.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+        // TODO: 27.10.2023 jwt filter 
         return http.build();
     }
 
