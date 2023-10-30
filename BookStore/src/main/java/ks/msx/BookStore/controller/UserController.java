@@ -5,11 +5,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import ks.msx.BookStore.dto.UserDTO;
 import ks.msx.BookStore.service.UserService;
-import ks.msx.BookStore.utility.JwtUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,7 +18,6 @@ import java.io.IOException;
 @AllArgsConstructor
 public class UserController {
     private final UserService userService;
-    private final JwtUtil jwtUtil;
 
     @RequestMapping(MainController.END_POINT+"/login")
     public String returnLoginPage(){
@@ -28,11 +25,10 @@ public class UserController {
     }
 
     @RequestMapping(value = MainController.END_POINT+"/login/log", method = RequestMethod.POST)
-    public void loginUser(@RequestBody UserDTO dto, HttpServletResponse response, HttpServletRequest request) throws ServletException, IOException {
-        request.login(dto.getUsername(), dto.getPassword());
-        UserDetails userDetails = userService.loadUserByUsername(dto.getUsername());
-        final String token = jwtUtil.generateToken(userDetails);
-        System.out.println(token);
+    public void loginUser(@RequestParam(name = "username")String username,
+                          @RequestParam(name = "password")String password, HttpServletResponse response, HttpServletRequest request) throws ServletException, IOException {
+        request.login(username, password);
+        UserDetails userDetails = userService.loadUserByUsername(username);
         response.setStatus(200);
         response.sendRedirect("/");
     }
@@ -61,5 +57,10 @@ public class UserController {
         request.login(username, password);
         response.setStatus(200);
         response.sendRedirect(MainController.END_POINT);
+    }
+
+    @RequestMapping(MainController.END_POINT+"/test")
+    public String test(){
+        return "testPage";
     }
 }

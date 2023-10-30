@@ -1,27 +1,20 @@
 package ks.msx.BookStore.config;
 
-import ks.msx.BookStore.config.filter.JwtFilter;
-import ks.msx.BookStore.controller.JwtEntryPoint;
 import ks.msx.BookStore.controller.MainController;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class WebConfig {
-    private final JwtEntryPoint jwtEntryPoint;
-    private final JwtFilter jwtFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -29,7 +22,8 @@ public class WebConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", MainController.END_POINT,
+                        .requestMatchers("/",
+                                MainController.END_POINT,
                                 MainController.END_POINT+"/logout",
                                 MainController.END_POINT+"/login",
                                 MainController.END_POINT+"/login/log",
@@ -40,8 +34,6 @@ public class WebConfig {
                 .formLogin(form -> form.permitAll()
                         .loginPage(MainController.END_POINT+"/login")
                         .successForwardUrl("/"));
-                        //.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-        // TODO: 27.10.2023 jwt filter 
         return http.build();
     }
 
