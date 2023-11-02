@@ -13,13 +13,17 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class UserService implements UserDetailsService {
+public class UserService {
     private final UserRepository userRepository;
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findUserByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Wrong username"));
+    public UserDetailsService userDetails(){
+        return new UserDetailsService() {
+            @Override
+            public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+                return userRepository.findUserByUsername(username)
+                        .orElseThrow(() -> new UsernameNotFoundException("Wrong username"));
+            }
+        };
     }
 
     public void registerUser(UserDTO dto){

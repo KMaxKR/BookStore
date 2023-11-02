@@ -5,12 +5,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import ks.msx.BookStore.dto.UserDTO;
 import ks.msx.BookStore.service.UserService;
+import ks.msx.BookStore.utility.AuthService;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
 
@@ -18,6 +19,7 @@ import java.io.IOException;
 @AllArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final AuthService authService;
 
     @RequestMapping(MainController.END_POINT+"/login")
     public String returnLoginPage(){
@@ -25,10 +27,10 @@ public class UserController {
     }
 
     @RequestMapping(value = MainController.END_POINT+"/login/log", method = RequestMethod.POST)
-    public void loginUser(@RequestParam(name = "username")String username,
-                          @RequestParam(name = "password")String password, HttpServletResponse response, HttpServletRequest request) throws ServletException, IOException {
-        request.login(username, password);
-        UserDetails userDetails = userService.loadUserByUsername(username);
+    public void loginUser(@RequestBody UserDTO dto, HttpServletResponse response, HttpServletRequest request) throws ServletException, IOException {
+        authService.signin(dto);
+        System.out.println(authService.signin(dto));
+        request.login(dto.getUsername(), dto.getPassword());
         response.setStatus(200);
         response.sendRedirect("/");
     }
@@ -46,17 +48,13 @@ public class UserController {
     }
 
     @RequestMapping(MainController.END_POINT+"/register/reg")
-    public void registerUser(@RequestParam(name = "username")String username,
-                             @RequestParam(name = "password")String password,
+    public void registerUser(@RequestBody UserDTO dto,
                              HttpServletResponse response,
                              HttpServletRequest request) throws IOException, ServletException {
-        userService.registerUser(UserDTO.builder()
-                        .username(username)
-                        .password(password)
-                .build());
-        request.login(username, password);
+        userService.registerUser(dto);
+        request.login(dto.getUsername(), dto.getPassword());
         response.setStatus(200);
-        response.sendRedirect(MainController.END_POINT);
+        response.sendRedirect("/");
     }
 
     @RequestMapping(MainController.END_POINT+"/test")
