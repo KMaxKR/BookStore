@@ -41,13 +41,13 @@ public class WebConfig {
                                 MainController.END_POINT+"/register/reg").permitAll()
                         .anyRequest().authenticated()
                 )
-                .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                //.sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .formLogin(form -> form.permitAll()
-                        .loginPage(MainController.END_POINT+"/login")
-                        .loginProcessingUrl(MainController.END_POINT+"/login/log")
-                        .successForwardUrl("/"));
+                .formLogin(form -> form
+                        .loginPage(MainController.END_POINT+"/login").permitAll()
+                        .loginProcessingUrl(MainController.END_POINT+"/login/log").permitAll()
+                        .successForwardUrl("/").permitAll());
         return http.build();
     }
 
