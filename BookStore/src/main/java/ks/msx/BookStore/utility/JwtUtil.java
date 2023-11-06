@@ -21,12 +21,12 @@ import java.util.function.Function;
 @Service
 @RequiredArgsConstructor
 public class JwtUtil implements JwtService {
-    @Value("${jwt.key}")
-    private static String key;
+    //@Value("${jwt.key}")
+    private static final String key = "jwtApiKey";
 
     private Claims extractAllClaims(String token){
         return Jwts.parser()
-                .setSigningKey(getSigningKey())
+                .setSigningKey(key)
                 .parseClaimsJws(token)
                 .getBody();
     }
@@ -41,8 +41,8 @@ public class JwtUtil implements JwtService {
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 60 * 60 * 2))
-                .signWith(SignatureAlgorithm.HS512, getSigningKey())
+                .setExpiration(new Date(System.currentTimeMillis() + 60 * 60 * 20000))
+                .signWith(SignatureAlgorithm.HS512, key)
                 .compact();
     }
 

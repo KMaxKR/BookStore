@@ -8,7 +8,6 @@ import ks.msx.BookStore.service.UserService;
 import ks.msx.BookStore.utility.JwtUtil;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,17 +35,17 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         final String username;
         final String jwt;
 
-        if (StringUtils.isEmpty(authHeader) || !StringUtils.startsWith(authHeader, "Bearer ")){
+        if (StringUtils.isEmpty(authHeader)){
             filterChain.doFilter(request, response);
             return;
         }
 
-        jwt = authHeader.substring(7);
-        username = jwtUtil.extractUsername(jwt);
+        //jwt = authHeader.substring(7);
+        username = jwtUtil.extractUsername(authHeader);
 
         if (!StringUtils.isEmpty(username) && SecurityContextHolder.getContext().getAuthentication() == null){
             UserDetails userDetails = userService.userDetails().loadUserByUsername(username);
-            if (jwtUtil.isTokenValid(jwt, userDetails)){
+            if (jwtUtil.isTokenValid(authHeader, userDetails)){
                 SecurityContext context = SecurityContextHolder.createEmptyContext();
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 

@@ -38,7 +38,9 @@ public class WebConfig {
                                 MainController.END_POINT+"/login",
                                 MainController.END_POINT+"/login/log",
                                 MainController.END_POINT+"/register",
-                                MainController.END_POINT+"/register/reg").permitAll()
+                                MainController.END_POINT+"/register/reg",
+                                MainController.END_POINT+"/test"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 //.sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
