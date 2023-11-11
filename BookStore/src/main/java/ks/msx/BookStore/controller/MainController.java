@@ -1,6 +1,8 @@
 package ks.msx.BookStore.controller;
 
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,4 +25,20 @@ public class MainController{
         return "main";
     }
 
+    @RequestMapping(MainController.END_POINT+"/login")
+    public String returnLoginPage(){
+        return "login";
+    }
+
+    @RequestMapping(MainController.END_POINT+"/register")
+    public String returnRegisterPage(){
+        return "register";
+    }
+
+    @RequestMapping(MainController.END_POINT+"/logout")
+    public void logoutUser(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        request.logout();
+        response.setStatus(200);
+        response.sendRedirect(MainController.END_POINT);
+    }
 }

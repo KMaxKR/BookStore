@@ -3,15 +3,11 @@ package ks.msx.BookStore.utility;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
-import ks.msx.BookStore.utility.service.JwtService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,13 +16,12 @@ import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
-public class JwtUtil implements JwtService {
-    //@Value("${jwt.key}")
-    private static final String key = "jwtApiKey";
+public class JwtUtil {
+
 
     private Claims extractAllClaims(String token){
         return Jwts.parser()
-                .setSigningKey(key)
+                .setSigningKey(SecurityConstants.JWT_KEY)
                 .parseClaimsJws(token)
                 .getBody();
     }
@@ -36,13 +31,13 @@ public class JwtUtil implements JwtService {
         return claimsTFunction.apply(claims);
     }
 
-    private String generateToken(Map<String, Object> extraClaims, UserDetails userDetails){
+    private String generateToken(Map<String, Object> extraClaims, Authentication authentication){
         return Jwts.builder()
                 .setClaims(extraClaims)
-                .setSubject(userDetails.getUsername())
+                .setSubject(authentication.getName())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 60 * 60 * 20000))
-                .signWith(SignatureAlgorithm.HS512, key)
+                .setExpiration(new Date(System.currentTimeMillis() + SecurityConstants.JWT_EXPIRATION))
+                .signWith(SignatureAlgorithm.HS512, SecurityConstants.JWT_KEY)
                 .compact();
     }
 
@@ -54,25 +49,23 @@ public class JwtUtil implements JwtService {
         return extractExpiration(token).before(new Date());
     }
 
-    private Key getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(key);
-        return Keys.hmacShaKeyFor(keyBytes);
-    }
-
-
-    @Override
     public String extractUsername(String token) {
         return extractClaims(token, Claims::getSubject);
     }
 
-    @Override
-    public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+
+    public String generateToken(Authentication authentication) {
+        return generateToken(new HashMap<>(), authentication);
     }
 
-    @Override
-    public boolean isTokenValid(String token, UserDetails userDetails) {
+
+    public boolean isTokenValid(String token) {
         final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        try{
+            Jwts.parser().setSigningKey(SecurityConstants.JWT_KEY).parseClaimsJws(token);
+            return true;
+        }catch (Exception e){
+            throw new AuthenticationCredentialsNotFoundException("Jwt was expired or incorrect");
+        }
     }
 }
